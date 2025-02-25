@@ -160,9 +160,39 @@ function makeWord(lettersObject) {
  *    sellTickets([25, 100]) => false (The seller does not have enough money to give change.)
  */
 function sellTickets(queue) {
-  const sum = queue.reduce((acc, payment) => acc + payment, 0);
-  if (sum > 100) return false;
-  return true;
+  let count25 = 0;
+  let count50 = 0;
+
+  return queue.every((bill) => {
+    if (bill === 25) {
+      count25 += 1;
+      return true;
+    }
+
+    if (bill === 50) {
+      if (count25 > 0) {
+        count25 -= 1;
+        count50 += 1;
+        return true;
+      }
+      return false;
+    }
+
+    if (bill === 100) {
+      if (count50 > 0 && count25 > 0) {
+        count50 -= 1;
+        count25 -= 1;
+        return true;
+      }
+      if (count25 >= 3) {
+        count25 -= 3;
+        return true;
+      }
+      return false;
+    }
+
+    return false; // Should never reach here
+  });
 }
 
 /**
